@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Etkinlik Düzenle</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}">
+</head>
+<body>
+    <nav class="main-nav">
+    <div class="nav-container">
+        <a href="{{ url_for('home') }}" class="logo">E-Etkinlik</a>
+        <div class="nav-links">
+            {% if session.get('is_admin') %}
+                <a href="{{ url_for('approve_users') }}" class="hover:underline">Kullanıcı Onayla</a>
+                <a href="{{ url_for('admin_events') }}" class="hover:underline">Etkinlikleri Yönet</a>
+                <a href="{{ url_for('admin_announcements') }}" class="hover:underline">Duyuruları Yönet</a>
+                <a href="{{ url_for('assign_admin') }}" class="hover:underline">Admin Ata</a>
+            {% endif %}
+            <a href="{{ url_for('home') }}" class="hover:underline">Ana Sayfa</a>
+            <a href="{{ url_for('events') }}" class="hover:underline">Etkinlikler</a>
+            <a href="{{ url_for('my_tickets') }}" class="hover:underline">Biletlerim</a>
+            <a href="{{ url_for('announcements') }}" class="hover:underline">Duyurular</a>
+            <a href="{{ url_for('profile') }}" class="hover:underline">Profil</a>
+            <a href="{{ url_for('logout') }}" class="hover:underline">Çıkış Yap</a>
+        </div>
+    </div>
+</nav>
+
+
+    <div class="container narrow-container">
+        <h1 class="page-title">Etkinlik Düzenle</h1>
+        <form method="POST" class="event-form">
+            <div class="form-group">
+                <label for="title">Başlık:</label>
+                <input type="text" id="title" name="title" value="{{ event.title }}" required>
+            </div>
+            <div class="form-group">
+                <label for="description">Açıklama:</label>
+                <textarea id="description" name="description">{{ event.description or '' }}</textarea>
+            </div>
+            <div class="form-group">
+                <label for="date">Tarih:</label>
+                <input type="datetime-local" id="date" name="date" value="{{ event.date.strftime('%Y-%m-%dT%H:%M') }}" required>
+            </div>
+            <div class="form-group">
+                <label for="category">Kategori:</label>
+                <select id="category" name="category" required>
+                    <option value="Music" {% if event.category == 'Music' %}selected{% endif %}>Müzik</option>
+                    <option value="Theater" {% if event.category == 'Theater' %}selected{% endif %}>Tiyatro</option>
+                    <option value="Sports" {% if event.category == 'Sports' %}selected{% endif %}>Spor</option>
+                    <option value="Art" {% if event.category == 'Art' %}selected{% endif %}>Sanat</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="total_tickets">Toplam Bilet:</label>
+                <input type="number" id="total_tickets" name="total_tickets" value="{{ event.total_tickets }}" required min="1">
+            </div>
+            <div class="form-group">
+                <label for="ticket_price">Bilet Fiyatı (TL):</label>
+                <input type="number" id="ticket_price" name="ticket_price" value="{{ event.ticket_price }}" required min="0" step="0.01">
+            </div>
+            <div class="form-group">
+                <label for="location">Yer:</label>
+                <input type="text" id="location" name="location" value="{{ event.location }}" required>
+            </div>
+            <div class="form-group">
+                <label class="checkbox-label">
+                    <input type="checkbox" name="is_outdoor" {% if event.is_outdoor %}checked{% endif %} class="checkbox">
+                    <span>Açık Hava Etkinliği</span>
+                </label>
+            </div>
+            <button type="submit" class="btn btn-primary">Etkinliği Güncelle</button>
+        </form>
+    </div>
+</body>
+    <footer style="text-align:center; padding: 15px; font-family: 'Comic Sans MS', cursive; background-color: #2f2c3f; color: #fffefe;">
+         <p> Made  by <strong>Mehmet Nuri</strong> | <a href="https://github.com/meowmet" target="_blank">GitHub: Meowmet</a> © 2025</p>
+    </footer>
+</html>

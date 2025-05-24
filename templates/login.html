@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Giriş Yap</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}">
+</head>
+<body>
+    <div class="container">
+        <h1 class="page-title">Giriş Yap</h1>
+        {% if error %}
+            <div class="alert alert-danger">{{ error }}</div>
+        {% endif %}
+        {% if message %}
+            <div class="alert alert-info">{{ message }}</div>
+        {% endif %}
+        <form method="POST" action="{{ url_for('login') }}">
+            <div class="form-group">
+                <label for="username" >Kullanıcı Adı:</label>
+                <input type="email" id="username" name="username" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Şifre:</label>
+                <input type="password" id="password" name="password" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Giriş Yap</button>
+        </form>
+        <p class="register-link">Hesabınız yok mu? <a href="{{ url_for('register') }}">Kayıt Ol</a></p>
+    </div>
+
+    <footer style="text-align:center; padding: 15px; font-family: 'Comic Sans MS', cursive;background-color: #2f2c3f; color: #fffefe;">
+         <p> Made  by <strong>Mehmet Nuri</strong> | <a href="https://github.com/meowmet" target="_blank">GitHub: Meowmet</a> © 2025</p>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bilet Al - {{ event.title }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}">
+    <script>
+        function updateTotal() {
+            const ticketType = document.getElementById('ticket_type').value;
+            const quantity = parseInt(document.getElementById('quantity').value) || 0;
+            const prices = {
+                'standard': Number('{{ prices.standard }}'),
+                'vip': Number('{{ prices.vip }}'),
+                'student': Number('{{ prices.student }}')
+            };
+            const total = prices[ticketType] * quantity;
+            document.getElementById('total_price').textContent = total.toFixed(2) + ' TL';
+        }
+    </script>
+</head>
+<body>
+    <nav class="main-nav">
+    <div class="nav-container">
+        <a href="{{ url_for('home') }}" class="logo">E-Etkinlik</a>
+        <div class="nav-links">
+            {% if session.get('is_admin') %}
+                <a href="{{ url_for('approve_users') }}" class="hover:underline">Kullanıcı Onayla</a>
+                <a href="{{ url_for('admin_events') }}" class="hover:underline">Etkinlikleri Yönet</a>
+                <a href="{{ url_for('admin_announcements') }}" class="hover:underline">Duyuruları Yönet</a>
+                <a href="{{ url_for('assign_admin') }}" class="hover:underline">Admin Ata</a>
+            {% endif %}
+            <a href="{{ url_for('home') }}" class="hover:underline">Ana Sayfa</a>
+            <a href="{{ url_for('events') }}" class="hover:underline">Etkinlikler</a>
+            <a href="{{ url_for('my_tickets') }}" class="hover:underline">Biletlerim</a>
+            <a href="{{ url_for('announcements') }}" class="hover:underline">Duyurular</a>
+            <a href="{{ url_for('profile') }}" class="hover:underline">Profil</a>
+            <a href="{{ url_for('logout') }}" class="hover:underline">Çıkış Yap</a>
+        </div>
+    </div>
+</nav>
+
+
+    <div class="container">
+        <h1 class="page-title">Bilet Al - {{ event.title }}</h1>
+        {% if error %}
+            <div class="alert alert-danger">{{ error }}</div>
+        {% endif %}
+        {% if weather_warning %}
+            <div class="alert alert-warning">⚠️ Bu etkinlik hava durumu nedeniyle gerçekleşmeyebilir: {{ event.weather.description }} ({{ event.weather.temperature }})</div>
+        {% endif %}
+        <form method="POST" action="{{ url_for('buy_ticket', event_id='tm_' + event.id if event.is_external else event.id) }}">
+            <div class="form-group">
+                <label for="ticket_type">Bilet Türü:</label>
+                <select id="ticket_type" name="ticket_type" onchange="updateTotal()" required>
+                    <option value="standard">Standart Bilet ({{ prices.standard }} TL)</option>
+                    <option value="vip">VIP Bilet ({{ prices.vip }} TL)</option>
+                    <option value="student">Öğrenci Bileti ({{ prices.student }} TL)</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="quantity">Adet:</label>
+                <input type="number" id="quantity" name="quantity" min="1" max="{{ event.available_tickets }}" value="1" onchange="updateTotal()" required>
+            </div>
+            <p><strong>Toplam Fiyat:</strong> <span id="total_price">{{ prices.standard }} TL</span></p>
+            <button type="submit" class="btn btn-primary">Sepete Ekle</button>
+        </form>
+    </div>
+
+    <footer style="text-align:center; padding: 15px; font-family: 'Comic Sans MS', cursive;background-color: #2f2c3f; color: #fffefe;">
+         <p> Made  by <strong>Mehmet Nuri</strong> | <a href="https://github.com/meowmet" target="_blank">GitHub: Meowmet</a> © 2025</p>
+    </footer>
+</body>
+</html>

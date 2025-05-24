@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Biletlerim</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}">
+    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}">
+</head>
+<body>
+  <nav class="main-nav">
+    <div class="nav-container">
+        <a href="{{ url_for('home') }}" class="logo">E-Etkinlik</a>
+        <div class="nav-links">
+            {% if session.get('is_admin') %}
+                <a href="{{ url_for('approve_users') }}" class="hover:underline">Kullanıcı Onayla</a>
+                <a href="{{ url_for('admin_events') }}" class="hover:underline">Etkinlikleri Yönet</a>
+                <a href="{{ url_for('admin_announcements') }}" class="hover:underline">Duyuruları Yönet</a>
+                <a href="{{ url_for('assign_admin') }}" class="hover:underline">Admin Ata</a>
+            {% endif %}
+            <a href="{{ url_for('home') }}" class="hover:underline">Ana Sayfa</a>
+            <a href="{{ url_for('events') }}" class="hover:underline">Etkinlikler</a>
+            <a href="{{ url_for('my_tickets') }}" class="hover:underline">Biletlerim</a>
+            <a href="{{ url_for('announcements') }}" class="hover:underline">Duyurular</a>
+            <a href="{{ url_for('profile') }}" class="hover:underline">Profil</a>
+            <a href="{{ url_for('logout') }}" class="hover:underline">Çıkış Yap</a>
+        </div>
+    </div>
+</nav>
+
+
+    <main class="container">
+        <h1 class="page-title">Biletlerim</h1>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        {% if tickets %}
+            <div class="table-responsive">
+                <table class="ticket-table">
+                    <thead>
+                        <tr>
+                            <th>Etkinlik</th>
+                            <th>Tarih</th>
+                            <th>Yer</th>
+                            <th>Bilet Türü</th>
+                            <th>Adet</th>
+                            <th>Toplam</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for ticket in tickets %}
+                            <tr>
+                                <td>
+                                    {% if ticket.is_external and ticket.external_url %}
+                                        <a href="{{ ticket.external_url }}" target="_blank">{{ ticket.title }}</a>
+                                    {% else %}
+                                        {{ ticket.title|default('Bilinmeyen Etkinlik') }}
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if ticket.is_external %}
+                                        {{ ticket.date if ticket.date else ticket.purchase_date.strftime('%Y-%m-%d %H:%M') }}
+                                    {% else %}
+                                        {{ ticket.date.strftime('%Y-%m-%d %H:%M') }}
+                                    {% endif %}
+                                </td>
+                                <td data-label="Yer">{{ ticket.location|default('Bilinmeyen Konum') }}</td>
+                                <td data-label="Bilet Türü">{{ ticket.ticket_type|replace('_', ' ')|title }}</td>
+                                <td data-label="Adet">{{ ticket.quantity }}</td>
+                                <td data-label="Toplam">{{ ticket.total_price|round(2) }} TL</td>
+    
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <p class="no-tickets">Henüz bilet satın almadınız.</p>
+            <a href="{{ url_for('events') }}" class="btn btn-primary">Etkinliklere Göz At</a>
+        {% endif %}
+    </main>
+
+    <footer style="text-align:center; padding: 15px; font-family: 'Comic Sans MS', cursive;background-color: #2f2c3f; color: #fffefe;">
+         <p> Made  by <strong>Mehmet Nuri</strong> | <a href="https://github.com/meowmet" target="_blank">GitHub: Meowmet</a> © 2025</p>
+    </footer>
+</body>
+</html>

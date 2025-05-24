@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Duyuruları Yönet</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}">
+</head>
+<body class="bg-gray-100 font-sans">
+    <nav class="main-nav">
+    <div class="nav-container">
+        <a href="{{ url_for('home') }}" class="logo">E-Etkinlik</a>
+        <div class="nav-links">
+            {% if session.get('is_admin') %}
+                <a href="{{ url_for('approve_users') }}" class="hover:underline">Kullanıcı Onayla</a>
+                <a href="{{ url_for('admin_events') }}" class="hover:underline">Etkinlikleri Yönet</a>
+                <a href="{{ url_for('admin_announcements') }}" class="hover:underline">Duyuruları Yönet</a>
+                <a href="{{ url_for('assign_admin') }}" class="hover:underline">Admin Ata</a>
+            {% endif %}
+            <a href="{{ url_for('home') }}" class="hover:underline">Ana Sayfa</a>
+            <a href="{{ url_for('events') }}" class="hover:underline">Etkinlikler</a>
+            <a href="{{ url_for('my_tickets') }}" class="hover:underline">Biletlerim</a>
+            <a href="{{ url_for('announcements') }}" class="hover:underline">Duyurular</a>
+            <a href="{{ url_for('profile') }}" class="hover:underline">Profil</a>
+            <a href="{{ url_for('logout') }}" class="hover:underline">Çıkış Yap</a>
+        </div>
+    </div>
+</nav>
+
+
+    <div class="container mx-auto mt-8 p-4">
+        <h1 class="text-2xl font-bold mb-6">Duyuruları Yönet</h1>
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="p-4 mb-4 rounded {{ 'bg-green-100 text-green-700' if category == 'success' else 'bg-red-100 text-red-700' }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+        <h2 class="text-xl font-semibold mb-4">Yeni Duyuru Ekle</h2>
+        <form method="POST" class="bg-white p-6 rounded shadow-md mb-8">
+            <div class="mb-4">
+                <label for="title" class="block text-gray-700">Başlık:</label>
+                <input type="text" id="title" name="title" required
+                       class="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500">
+            </div>
+            <div class="mb-4">
+                <label for="content" class="block text-gray-700">İçerik:</label>
+                <textarea id="content" name="content" required
+                          class="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
+            </div>
+            <button type="submit"
+                    class="w-full bg-blue-600 text-white p-2 rounded hover:bg-blue-700 transition">Duyuru Ekle</button>
+        </form>
+
+        <h2 class="text-xl font-semibold mb-4">Mevcut Duyurular</h2>
+        {% if announcements %}
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {% for ann in announcements %}
+                    <div class="bg-white p-4 rounded shadow-md">
+                        <h3 class="text-lg font-bold">{{ ann.title }}</h3>
+                        <p>{{ ann.content }}</p>
+                        <p><strong>Tarih:</strong> {{ ann.date.strftime('%Y-%m-%d %H:%M') }}</p>
+                        <div class="mt-4 flex space-x-2">
+                            <a href="{{ url_for('edit_announcement', ann_id=ann.id) }}"
+                               class="bg-yellow-500 text-white px-4 py-2 rounded hover:bg-yellow-600">Düzenle</a>
+                            <a href="{{ url_for('delete_announcement', ann_id=ann.id) }}"
+                               class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
+                               onclick="return confirm('Bu duyuruyu silmek istediğinizden emin misiniz?')">Sil</a>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p>Henüz duyuru yok.</p>
+        {% endif %}
+    </div>
+</body>
+<footer style="text-align:center; padding: 15px; font-family: 'Comic Sans MS', cursive;background-color: #2f2c3f; color: #fffefe;">
+         <p> Made  by <strong>Mehmet Nuri</strong> | <a href="https://github.com/meowmet" target="_blank">GitHub: Meowmet</a> © 2025</p>
+    </footer>
+</html>

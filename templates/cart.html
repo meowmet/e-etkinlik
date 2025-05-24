@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sepetiniz</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}">
+</head>
+<body>
+    <nav class="main-nav">
+    <div class="nav-container">
+        <a href="{{ url_for('home') }}" class="logo">E-Etkinlik</a>
+        <div class="nav-links">
+            {% if session.get('is_admin') %}
+                <a href="{{ url_for('approve_users') }}" class="hover:underline">Kullanıcı Onayla</a>
+                <a href="{{ url_for('admin_events') }}" class="hover:underline">Etkinlikleri Yönet</a>
+                <a href="{{ url_for('admin_announcements') }}" class="hover:underline">Duyuruları Yönet</a>
+                <a href="{{ url_for('assign_admin') }}" class="hover:underline">Admin Ata</a>
+            {% endif %}
+            <a href="{{ url_for('home') }}" class="hover:underline">Ana Sayfa</a>
+            <a href="{{ url_for('events') }}" class="hover:underline">Etkinlikler</a>
+            <a href="{{ url_for('my_tickets') }}" class="hover:underline">Biletlerim</a>
+            <a href="{{ url_for('announcements') }}" class="hover:underline">Duyurular</a>
+            <a href="{{ url_for('profile') }}" class="hover:underline">Profil</a>
+            <a href="{{ url_for('logout') }}" class="hover:underline">Çıkış Yap</a>
+        </div>
+    </div>
+</nav>
+
+
+    <main class="container">
+        <h1 class="page-title">Sepetiniz</h1>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        {% if cart_items %}
+            <div class="table-responsive">
+                <table class="cart-table">
+                    <thead>
+                        <tr>
+                            <th>Etkinlik</th>
+                            <th>Tarih</th>
+                            <th>Yer</th>
+                            <th>Bilet Türü</th>
+                            <th>Adet</th>
+                            <th>Fiyat</th>
+                            <th>Toplam</th>
+                            <th>İşlem</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in cart_items %}
+                            <tr>
+                                <td>
+                                    {% if item.is_external %}
+                                        <a href="{{ item.external_url }}" target="_blank">{{ item.title }}</a>
+                                    {% else %}
+                                        {{ item.title }}
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if item.is_external %}
+                                        {{ item.date }}
+                                    {% else %}
+                                        {{ item.date.strftime('%Y-%m-%d %H:%M') }}
+                                    {% endif %}
+                                </td>
+                                <td>{{ item.location }}</td>
+                                <td>{{ item.ticket_type|replace('_', ' ')|title }}</td>
+                                <td>{{ item.quantity }}</td>
+                                <td>{{ item.price|round(2) }} TL</td>
+                                <td>{{ item.total|round(2) }} TL</td>
+                                <td>
+                                    <a href="{{ url_for('remove_from_cart', cart_id=item.id) }}" class="btn btn-danger" onclick="return confirm('Bu bileti sepetten kaldırmak istediğinizden emin misiniz?')">Kaldır</a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td colspan="6" class="text-right"><strong>Toplam</strong></td>
+                            <td class="total-amount"><strong>{{ total|round(2) }} TL</strong></td>
+                            <td></td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+
+            <form method="POST" action="{{ url_for('purchase_cart') }}" class="purchase-form">
+                <button type="submit" class="btn btn-primary">Satın Alma Simülasyonu</button>
+            </form>
+
+            
+
+        {% else %}
+            <p class="empty-cart">Sepetiniz boş.</p>
+            <a href="{{ url_for('events') }}" class="btn btn-primary">Etkinliklere Göz At</a>
+        {% endif %}
+    </main>
+</body>
+    <footer style="text-align:center; padding: 15px; font-family: 'Comic Sans MS', cursive;background-color: #2f2c3f; color: #fffefe;">
+         <p> Made  by <strong>Mehmet Nuri</strong> | <a href="https://github.com/meowmet" target="_blank">GitHub: Meowmet</a> © 2025</p>
+    </footer>
+</html>

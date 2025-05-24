@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kayıt Ol</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}">
+</head>
+<body>
+    <div class="container">
+        <h1 class="page-title">Kayıt Ol</h1>
+        {% if error %}
+            <div class="alert alert-danger">{{ error }}</div>
+        {% endif %}
+        <form method="POST" action="{{ url_for('register') }}">
+            <div class="form-group">
+                <label for="username" >Kullanıcı Adı:</label>
+                <input type="email" id="username" name="username" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Şifre:</label>
+                <input type="password" id="password" name="password" required>
+            </div>
+            <div class="form-group">                         
+    <label for="password_confirm">Şifre Tekrar:</label>
+    <input type="password" id="password_confirm" name="confirm_password" required>
+
+            </div>
+            <div class="form-group">
+                <label>İlgi Alanları:</label>
+                <div class="checkbox-group">
+                    <label class="checkbox-label"><input type="checkbox" name="interests" value="Müzik"> Müzik</label>
+                    <label class="checkbox-label"><input type="checkbox" name="interests" value="Tiyatro"> Tiyatro</label>
+                    <label class="checkbox-label"><input type="checkbox" name="interests" value="Spor"> Spor</label>
+                    <label class="checkbox-label"><input type="checkbox" name="interests" value="Sanat"> Sanat</label>
+                </div>
+            </div>
+            <button type="submit" class="btn btn-primary">Kayıt Ol</button>
+        </form>
+        <p class="login-link">Zaten hesabınız var mı? <a href="{{ url_for('login') }}">Giriş Yap</a></p>
+    </div>
+
+    <footer style="text-align:center; padding: 15px; font-family: 'Comic Sans MS', cursive; background-color: #2f2c3f; color: #fffefe;">
+         <p> Made  by <strong>Mehmet Nuri</strong> | <a href="https://github.com/meowmet" target="_blank">GitHub: Meowmet</a> © 2025</p>
+    </footer>
+</body>
+</html>
