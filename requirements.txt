@@ -1,0 +1,8 @@
+flask
+werkzeug
+flask-talisman
+mysql-connector-python
+requests
+cachetools
+python-dotenv
+gunicorn
