@@ -71,3 +71,6 @@
 - Oturum çerezleri `HttpOnly` ve `Secure` bayrakları ile korunur.
 - Parametreli SQL sorguları ile enjeksiyon koruması
 - Yönetici işlemleri `is_admin` kontrolü ile sınırlanmıştır.
+
+## ⚠️ÖNEMLİ NOT
+Uygulamayı kullanmak için ticketmaster sitesinden api key alıp app.py daki TICKETMASTER_API_KEY değişkenini değiştirmeniz gerekmektedir
